@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fiskable — Tu fiscalidad de Amazon, resuelta en minutos</title>
+  <meta name="description" content="Sube tu CSV y Fiskable clasifica cada venta, calcula el IVA por país y prepara tus declaraciones automáticamente." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1a6b4a; --green-mid: #2d8a62; --green-light: #e8f5ee;
+      --green-accent: #34d17a; --black: #0d0d0d; --gray: #6b7280;
+      --gray-light: #f5f5f3; --white: #fafaf8; --border: #e5e5e0;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; overflow-x: hidden; }
+
+    /* LOGO */
+    .logo { display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; font-weight: 600; font-size: 1.15rem; line-height: 1; white-space: nowrap; }
+    .logo-icon { width: 30px; height: 30px; background: var(--green); border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .logo-icon svg { width: 15px; height: 15px; display: block; }
+    .logo-name { color: var(--black); }
+    .logo-name .k { color: var(--green); }
+    .logo-footer .logo-name { color: white; }
+    .logo-footer .logo-name .k { color: #1a6b4a !important; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2.5rem; background: rgba(250,250,248,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.875rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--black); }
+    .nav-cta { background: var(--green) !important; color: white !important; padding: 0.5rem 1.25rem !important; border-radius: 8px !important; font-weight: 500 !important; }
+    .nav-cta:hover { background: var(--green-mid) !important; color: white !important; }
+    .nav-lang { display: flex; gap: 0.4rem; }
+    .lang-btn { font-size: 0.75rem; font-weight: 500; color: var(--gray); background: none; border: 1px solid var(--border); border-radius: 6px; padding: 0.25rem 0.6rem; cursor: pointer; transition: all 0.2s; }
+    .lang-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8rem 2rem 5rem; text-align: center; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26,107,74,0.08) 0%, transparent 70%); pointer-events: none; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--green-light); color: var(--green); border: 1px solid rgba(26,107,74,0.2); border-radius: 100px; padding: 0.35rem 1rem; font-size: 0.8rem; font-weight: 500; margin-bottom: 2rem; animation: fadeUp 0.6s ease both; }
+    .badge-dot { width: 6px; height: 6px; background: var(--green-accent); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.85)} }
+    h1 { font-family: 'Instrument Serif', serif; font-size: clamp(2.75rem,6vw,5rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--black); max-width: 800px; margin-bottom: 1.5rem; animation: fadeUp 0.6s 0.1s ease both; }
+    h1 em { font-style: italic; color: var(--green); }
+    .hero-sub { font-size: 1.125rem; color: var(--gray); max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem; animation: fadeUp 0.6s 0.2s ease both; }
+    .hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.6s 0.3s ease both; }
+    .btn-primary { background: var(--green); color: white; border: none; border-radius: 10px; padding: 0.875rem 2rem; font-size: 1rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; box-shadow: 0 4px 16px rgba(26,107,74,0.3); }
+    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--gray); border: 1px solid var(--border); border-radius: 10px; padding: 0.875rem 1.75rem; font-size: 1rem; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+    .btn-secondary:hover { border-color: var(--gray); color: var(--black); }
+    .hero-note { margin-top: 1.25rem; font-size: 0.8rem; color: var(--gray); animation: fadeUp 0.6s 0.4s ease both; }
+
+    /* PREVIEW */
+    .hero-preview { margin-top: 4rem; width: 100%; max-width: 900px; background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.08); animation: fadeUp 0.8s 0.5s ease both; }
+    .preview-bar { background: var(--gray-light); padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); }
+    .pd { width: 10px; height: 10px; border-radius: 50%; }
+    .pd:nth-child(1){background:#ff5f56} .pd:nth-child(2){background:#ffbd2e} .pd:nth-child(3){background:#27c93f}
+    .preview-url { margin: 0 auto; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 0.2rem 1rem; font-size: 0.75rem; color: var(--gray); }
+    .preview-body { padding: 1.5rem; display: grid; grid-template-columns: 180px 1fr; gap: 1rem; min-height: 300px; }
+    .preview-sidebar { background: var(--gray-light); border-radius: 10px; padding: 1rem; }
+    .preview-nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.72rem; color: var(--gray); margin-bottom: 0.2rem; }
+    .preview-nav-item.active { background: white; color: var(--green); font-weight: 500; }
+    .preview-nav-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: 0.4; flex-shrink: 0; }
+    .preview-nav-item.active .preview-nav-dot { opacity: 1; }
+    .preview-content { display: flex; flex-direction: column; gap: 0.75rem; }
+    .preview-title { font-size: 0.85rem; font-weight: 600; color: var(--black); }
+    .preview-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.5rem; }
+    .preview-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem; }
+    .pcl { font-size: 0.58rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+    .pcv { font-size: 0.85rem; font-weight: 600; color: var(--black); }
+    .pcv.g { color: var(--green); } .pcv.r { color: #dc2626; }
+    .preview-table { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .pt-head { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 0.45rem 0.7rem; background: var(--gray-light); font-size: 0.58rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; }
+    .pt-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 0.45rem 0.7rem; font-size: 0.68rem; border-top: 1px solid var(--border); align-items: center; }
+    .pbadge { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 100px; font-size: 0.58rem; font-weight: 500; }
+    .pbadge.amz { background: #fef3c7; color: #92400e; }
+    .pbadge.shp { background: #f3e8ff; color: #7c3aed; }
+    .pbadge.ok { background: var(--green-light); color: var(--green); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* SECTIONS */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--green); margin-bottom: 1rem; }
+    .section-title { font-family: 'Instrument Serif', serif; font-size: clamp(2rem,4vw,3rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--black); margin-bottom: 1rem; }
+    .section-title em { font-style: italic; color: var(--green); }
+    .section-sub { font-size: 1.05rem; color: var(--gray); max-width: 520px; line-height: 1.7; }
+
+    /* PROBLEM */
+    .problem { background: var(--black); }
+    .problem .section-label { color: var(--green-accent); }
+    .problem .section-title { color: white; }
+    .problem-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+    .problem-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 2rem; transition: border-color 0.2s, opacity 0.5s ease, transform 0.5s ease; opacity: 0; transform: translateY(16px); }
+    .problem-card:hover { border-color: rgba(255,255,255,0.16); }
+    .problem-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .problem-card h3 { font-size: 1.05rem; font-weight: 600; color: white; margin-bottom: 0.5rem; }
+    .problem-card p { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+    /* STEPS */
+    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; margin-top: 3.5rem; }
+    .step { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .step-num { width: 40px; height: 40px; background: var(--green); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; flex-shrink: 0; }
+    .step h3 { font-size: 1.05rem; font-weight: 600; color: var(--black); }
+    .step p { font-size: 0.9rem; color: var(--gray); line-height: 1.6; }
+
+    /* FEATURES */
+    .features-bg { background: var(--gray-light); }
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 3rem; }
+    .feature-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, box-shadow 0.2s; }
+    .feature-card:hover { border-color: rgba(26,107,74,0.3); transform: translateY(-2px) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+    .feature-icon { width: 44px; height: 44px; background: var(--green-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 1.25rem; }
+    .feature-card h3 { font-size: 1rem; font-weight: 600; color: var(--black); margin-bottom: 0.5rem; }
+    .feature-card p { font-size: 0.875rem; color: var(--gray); line-height: 1.6; }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 3rem; align-items: start; }
+    .pricing-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 2rem; position: relative; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .pricing-card.featured { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
+    .pricing-popular { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--green); color: white; font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 100px; white-space: nowrap; }
+    .pricing-name { font-size: 0.875rem; font-weight: 600; color: var(--gray); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .pricing-price { font-family: 'Instrument Serif', serif; font-size: 3rem; color: var(--black); line-height: 1; margin-bottom: 0.25rem; }
+    .pricing-price span { font-family: 'DM Sans', sans-serif; font-size: 1rem; color: var(--gray); font-weight: 400; }
+    .pricing-desc { font-size: 0.875rem; color: var(--gray); margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem; }
+    .pricing-features li { font-size: 0.875rem; color: var(--gray); display: flex; align-items: flex-start; gap: 0.6rem; }
+    .pricing-features li::before { content: '✓'; color: var(--green); font-weight: 600; flex-shrink: 0; }
+    .pricing-btn { width: 100%; padding: 0.875rem; border-radius: 10px; font-size: 0.9rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; display: block; text-align: center; transition: all 0.2s; }
+    .pricing-btn.outline { background: transparent; border: 1px solid var(--border); color: var(--black); }
+    .pricing-btn.outline:hover { border-color: var(--green); color: var(--green); }
+    .pricing-btn.filled { background: var(--green); border: 1px solid var(--green); color: white; }
+    .pricing-btn.filled:hover { background: var(--green-mid); }
+
+    /* FAQ */
+    .faq-list { max-width: 700px; margin-top: 3rem; }
+    .faq-item { border-bottom: 1px solid var(--border); opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .faq-question { width: 100%; background: none; border: none; text-align: left; padding: 1.25rem 0; font-size: 1rem; font-weight: 500; font-family: 'DM Sans', sans-serif; color: var(--black); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .faq-question:hover { color: var(--green); }
+    .faq-icon { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--gray); flex-shrink: 0; transition: all 0.2s; }
+    .faq-item.open .faq-icon { background: var(--green); border-color: var(--green); color: white; transform: rotate(45deg); }
+    .faq-answer { font-size: 0.9rem; color: var(--gray); line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
+    .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 1.25rem; }
+
+    /* CTA */
+    .cta-final { background: var(--green); text-align: center; }
+    .cta-final .section-label { color: rgba(255,255,255,0.6); }
+    .cta-final .section-title { color: white; }
+    .cta-final-actions { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .btn-white { background: white; color: var(--green); border: none; border-radius: 10px; padding: 0.875rem 2rem; font-size: 1rem; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+    .btn-white:hover { background: var(--green-light); }
+    .btn-ghost-white { background: transparent; color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 0.875rem 1.75rem; font-size: 1rem; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+    .btn-ghost-white:hover { border-color: rgba(255,255,255,0.6); color: white; }
+
+    /* FOOTER */
+    footer { background: var(--black); padding: 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-links { display: flex; gap: 1.5rem; list-style: none; }
+    .footer-links a { font-size: 0.8rem; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.8); }
+    .footer-copy { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+    /* LANG */
+    [data-lang="en"] { display: none; }
+    body.lang-en [data-lang="es"] { display: none; }
+    body.lang-en [data-lang="en"] { display: revert; }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      .problem-grid, .steps, .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .preview-body { grid-template-columns: 1fr; }
+      .preview-sidebar { display: none; }
+      .preview-cards { grid-template-columns: repeat(2,1fr); }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo"><div class="logo-icon"><svg viewBox="0 0 16 16" fill="none"><polyline points="2,11 6,7 9,10 14,4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="11,4 14,4 14,7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fis<span class="k">kable</span></span></a>
+  <ul class="nav-links">
+    <li><a href="#como-funciona" data-lang="es">Cómo funciona</a><a href="#como-funciona" data-lang="en">How it works</a></li>
+    <li><a href="#funcionalidades" data-lang="es">Funcionalidades</a><a href="#funcionalidades" data-lang="en">Features</a></li>
+    <li><a href="#precios" data-lang="es">Precios</a><a href="#precios" data-lang="en">Pricing</a></li>
+    <li><a href="https://app.fiskable.com" class="nav-cta" data-lang="es">Empezar gratis</a><a href="https://app.fiskable.com" class="nav-cta" data-lang="en">Start free</a></li>
+  </ul>
+  <div class="nav-lang">
+    <button class="lang-btn active" data-set="es" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" data-set="en" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-badge"><div class="badge-dot"></div><span data-lang="es">Nuevo — Clasificación fiscal automática con IA</span><span data-lang="en">New — Automatic tax classification with AI</span></div>
+  <h1 data-lang="es">Tu fiscalidad de Amazon,<br><em>resuelta en minutos</em></h1>
+  <h1 data-lang="en">Your Amazon tax compliance,<br><em>solved in minutes</em></h1>
+  <p class="hero-sub" data-lang="es">Sube tu CSV y Fiskable clasifica cada venta, calcula el IVA por país y prepara tus declaraciones automáticamente.</p>
+  <p class="hero-sub" data-lang="en">Upload your CSV and Fiskable classifies each sale, calculates VAT by country and prepares your declarations automatically.</p>
+  <div class="hero-actions">
+    <a href="https://app.fiskable.com/register" class="btn-primary" data-lang="es">Empezar gratis →</a>
+    <a href="https://app.fiskable.com/register" class="btn-primary" data-lang="en">Start for free →</a>
+    <a href="#como-funciona" class="btn-secondary" data-lang="es">Ver cómo funciona</a>
+    <a href="#como-funciona" class="btn-secondary" data-lang="en">See how it works</a>
+  </div>
+  <p class="hero-note" data-lang="es">Sin tarjeta de crédito · Configuración en 2 minutos</p>
+  <p class="hero-note" data-lang="en">No credit card required · 2-minute setup</p>
+  <div class="hero-preview">
+    <div class="preview-bar">
+      <div class="pd"></div><div class="pd"></div><div class="pd"></div>
+      <div class="preview-url">app.fiskable.com/dashboard</div>
+    </div>
+    <div class="preview-body">
+      <div class="preview-sidebar">
+        <div style="margin-bottom:1.25rem;"><a href="#" class="logo" style="font-size:0.82rem;gap:0.3rem;"><div class="logo-icon" style="width:22px;height:22px;border-radius:5px;"><svg viewBox="0 0 16 16" fill="none"><polyline points="2,11 6,7 9,10 14,4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="11,4 14,4 14,7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fis<span class="k">kable</span></span></a></div>
+        <div class="preview-nav-item active"><div class="preview-nav-dot"></div> Dashboard</div>
+        <div class="preview-nav-item"><div class="preview-nav-dot"></div> Documentos</div>
+        <div class="preview-nav-item"><div class="preview-nav-dot"></div> Historial</div>
+        <div class="preview-nav-item"><div class="preview-nav-dot"></div> Declaraciones</div>
+        <div class="preview-nav-item"><div class="preview-nav-dot"></div> Alertas</div>
+      </div>
+      <div class="preview-content">
+        <div class="preview-title">Dashboard — Q1 2026</div>
+        <div class="preview-cards">
+          <div class="preview-card"><div class="pcl" data-lang="es">Facturación</div><div class="pcl" data-lang="en">Revenue</div><div class="pcv">48.749 €</div></div>
+          <div class="preview-card"><div class="pcl" data-lang="es">Gastos</div><div class="pcl" data-lang="en">Expenses</div><div class="pcv">3.244 €</div></div>
+          <div class="preview-card"><div class="pcl">IVA</div><div class="pcv g">6.120 €</div></div>
+          <div class="preview-card"><div class="pcl" data-lang="es">Resultado</div><div class="pcl" data-lang="en">Result</div><div class="pcv r">5.991 €</div></div>
+        </div>
+        <div class="preview-table">
+          <div class="pt-head"><span data-lang="es">Período</span><span data-lang="en">Period</span><span data-lang="es">Facturación</span><span data-lang="en">Revenue</span><span>IVA</span><span data-lang="es">Estado</span><span data-lang="en">Status</span></div>
+          <div class="pt-row"><span><span class="pbadge amz">Amazon</span> Enero 2026</span><span>18.240 €</span><span>2.104 €</span><span class="pbadge ok">✓ OK</span></div>
+          <div class="pt-row"><span><span class="pbadge amz">Amazon</span> Febrero 2026</span><span>16.312 €</span><span>1.983 €</span><span class="pbadge ok">✓ OK</span></div>
+          <div class="pt-row"><span><span class="pbadge shp">Shopify</span> Marzo 2026</span><span>14.197 €</span><span>2.033 €</span><span class="pbadge ok">✓ OK</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problem">
+  <div class="container">
+    <div class="section-label" data-lang="es">El problema</div>
+    <div class="section-label" data-lang="en">The problem</div>
+    <h2 class="section-title" data-lang="es">Vender en Amazon es complejo.<br><em>La fiscalidad, más aún.</em></h2>
+    <h2 class="section-title" data-lang="en">Selling on Amazon is complex.<br><em>The taxes, even more so.</em></h2>
+    <div class="problem-grid">
+      <div class="problem-card"><div class="problem-icon">🗺️</div><h3 data-lang="es">Múltiples jurisdicciones</h3><h3 data-lang="en">Multiple jurisdictions</h3><p data-lang="es">Vendes en España, Alemania, Francia e Italia a la vez. Cada país tiene su propio tipo de IVA, fechas límite y modelos de declaración.</p><p data-lang="en">You sell in Spain, Germany, France and Italy at the same time. Each country has its own VAT rate, deadlines and declaration forms.</p></div>
+      <div class="problem-card"><div class="problem-icon">📊</div><h3 data-lang="es">CSVs incomprensibles</h3><h3 data-lang="en">Incomprehensible CSVs</h3><p data-lang="es">El informe de IVA de Amazon tiene más de 80 columnas. Entender qué transacción va a qué categoría fiscal requiere horas de trabajo manual.</p><p data-lang="en">Amazon's VAT report has over 80 columns. Understanding which transaction goes to which tax category requires hours of manual work.</p></div>
+      <div class="problem-card"><div class="problem-icon">⚠️</div><h3 data-lang="es">Riesgo de errores</h3><h3 data-lang="en">Risk of errors</h3><p data-lang="es">Un error en la clasificación de una venta intracomunitaria puede suponer sanciones de la Agencia Tributaria.</p><p data-lang="en">An error in the classification of an intra-community sale can result in penalties from the tax authority.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="como-funciona">
+  <div class="container">
+    <div class="section-label" data-lang="es">Cómo funciona</div>
+    <div class="section-label" data-lang="en">How it works</div>
+    <h2 class="section-title" data-lang="es">Tres pasos para tener<br><em>tu fiscalidad bajo control</em></h2>
+    <h2 class="section-title" data-lang="en">Three steps to have<br><em>your taxes under control</em></h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3 data-lang="es">Sube tu CSV de Amazon</h3><h3 data-lang="en">Upload your Amazon CSV</h3><p data-lang="es">Descarga el informe de transacciones de IVA desde Seller Central y súbelo a Fiskable. También funciona con Shopify y facturas PDF.</p><p data-lang="en">Download the VAT transactions report from Seller Central and upload it to Fiskable. Also works with Shopify and PDF invoices.</p></div>
+      <div class="step"><div class="step-num">2</div><h3 data-lang="es">Fiskable lo clasifica todo</h3><h3 data-lang="en">Fiskable classifies everything</h3><p data-lang="es">Nuestra IA analiza cada transacción: B2C local, B2B intracomunitaria, OSS, exportación o Amazon Marketplace. Con el IVA correcto por país.</p><p data-lang="en">Our AI analyses each transaction: local B2C, intra-community B2B, OSS, export or Amazon Marketplace. With the correct VAT by country.</p></div>
+      <div class="step"><div class="step-num">3</div><h3 data-lang="es">Declara con confianza</h3><h3 data-lang="en">Declare with confidence</h3><p data-lang="es">Fiskable cruza tus ventas y tus facturas de gastos para darte el resultado neto de IVA exacto. Ve cuánto declarar en cada país y cuándo, sin sorpresas al final del trimestre.</p><p data-lang="en">Fiskable cross-references your sales and expense invoices to give you the exact net VAT result. See how much to declare in each country and when, with no surprises at the end of the quarter.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="funcionalidades" class="features-bg">
+  <div class="container">
+    <div class="section-label" data-lang="es">Funcionalidades</div>
+    <div class="section-label" data-lang="en">Features</div>
+    <h2 class="section-title" data-lang="es">Todo lo que necesitas<br><em>para gestionar tu IVA</em></h2>
+    <h2 class="section-title" data-lang="en">Everything you need<br><em>to manage your VAT</em></h2>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🔍</div><h3 data-lang="es">Clasificación automática</h3><h3 data-lang="en">Automatic classification</h3><p data-lang="es">Cada transacción clasificada correctamente: B2C, B2B, OSS, intracomunitaria o exportación. Compatible con Amazon y Shopify.</p><p data-lang="en">Each transaction correctly classified: B2C, B2B, OSS, intra-community or export. Compatible with Amazon and Shopify.</p></div>
+      <div class="feature-card"><div class="feature-icon">🌍</div><h3 data-lang="es">Multi-país</h3><h3 data-lang="en">Multi-country</h3><p data-lang="es">Gestiona tu IVA en España, Alemania, Francia, Italia, Polonia, Reino Unido y más. Con las fechas límite correctas de cada país.</p><p data-lang="en">Manage your VAT in Spain, Germany, France, Italy, Poland, UK and more. With the correct deadlines for each country.</p></div>
+      <div class="feature-card"><div class="feature-icon">🤖</div><h3 data-lang="es">IA para facturas de gastos</h3><h3 data-lang="en">AI for expense invoices</h3><p data-lang="es">Sube tus facturas de proveedores en PDF y Fiskable extrae automáticamente proveedor, base, IVA y total. Detecta intracomunitarias y calcula el IVA soportado deducible en tu Modelo 303.</p><p data-lang="en">Upload your supplier invoices in PDF and Fiskable automatically extracts supplier, base, VAT and total. Detects intra-community invoices and calculates deductible input VAT for your VAT return.</p></div>
+      <div class="feature-card"><div class="feature-icon">📅</div><h3 data-lang="es">Declaraciones por trimestre</h3><h3 data-lang="en">Quarterly declarations</h3><p data-lang="es">Visualiza qué modelos tienes que presentar en cada trimestre, cuánto y cuándo. Marca las declaraciones como presentadas.</p><p data-lang="en">View which models you need to submit each quarter, how much and when. Mark declarations as submitted to keep track.</p></div>
+      <div class="feature-card"><div class="feature-icon">📊</div><h3 data-lang="es">Dashboard fiscal</h3><h3 data-lang="en">Tax dashboard</h3><p data-lang="es">Visión global de tu facturación, gastos e IVA por período. Filtra por mes, trimestre o año.</p><p data-lang="en">Global view of your billing, expenses and VAT by period. Filter by month, quarter or year.</p></div>
+      <div class="feature-card"><div class="feature-icon">🏦</div><h3 data-lang="es">OSS y Amazon Marketplace</h3><h3 data-lang="en">OSS and Amazon Marketplace</h3><p data-lang="es">Identifica automáticamente qué ventas van a la Ventanilla Única OSS y qué IVA recauda Amazon en tu nombre.</p><p data-lang="en">Automatically identifies which sales go to the OSS One Stop Shop and what VAT Amazon collects on your behalf.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="precios">
+  <div class="container">
+    <div class="section-label" data-lang="es">Precios</div>
+    <div class="section-label" data-lang="en">Pricing</div>
+    <h2 class="section-title" data-lang="es">Simple y <em>sin sorpresas</em></h2>
+    <h2 class="section-title" data-lang="en">Simple and <em>no surprises</em></h2>
+    <p class="section-sub" data-lang="es">Todos los planes incluyen acceso completo a la plataforma. Sin comisiones por transacción.</p>
+    <p class="section-sub" data-lang="en">All plans include full platform access. No transaction fees.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price">19€<span>/mes</span></div>
+        <p class="pricing-desc" data-lang="es">Para vendedores que empiezan</p>
+        <p class="pricing-desc" data-lang="en">For sellers just starting out</p>
+        <ul class="pricing-features">
+          <li data-lang="es">Hasta 50 facturas/trimestre</li><li data-lang="en">Up to 50 invoices/quarter</li>
+          <li data-lang="es">CSV Amazon y Shopify</li><li data-lang="en">Amazon and Shopify CSV</li>
+          <li data-lang="es">Dashboard fiscal</li><li data-lang="en">Tax dashboard</li>
+          <li data-lang="es">Historial completo</li><li data-lang="en">Complete history</li>
+        </ul>
+        <a href="https://app.fiskable.com/register" class="pricing-btn outline" data-lang="es">Empezar gratis</a>
+        <a href="https://app.fiskable.com/register" class="pricing-btn outline" data-lang="en">Start free</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-popular" data-lang="es">Más popular</div>
+        <div class="pricing-popular" data-lang="en">Most popular</div>
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-price">39€<span>/mes</span></div>
+        <p class="pricing-desc" data-lang="es">Para vendedores activos en varios países</p>
+        <p class="pricing-desc" data-lang="en">For active sellers in multiple countries</p>
+        <ul class="pricing-features">
+          <li data-lang="es">Hasta 200 facturas/trimestre</li><li data-lang="en">Up to 200 invoices/quarter</li>
+          <li data-lang="es">Todo lo del Starter</li><li data-lang="en">Everything in Starter</li>
+          <li data-lang="es">Envío a gestoría</li><li data-lang="en">Send to accountant</li>
+          <li data-lang="es">Exportación Excel</li><li data-lang="en">Excel export</li>
+          <li data-lang="es">Soporte prioritario</li><li data-lang="en">Priority support</li>
+        </ul>
+        <a href="https://app.fiskable.com/register" class="pricing-btn filled" data-lang="es">Empezar gratis</a>
+        <a href="https://app.fiskable.com/register" class="pricing-btn filled" data-lang="en">Start free</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Business</div>
+        <div class="pricing-price">69€<span>/mes</span></div>
+        <p class="pricing-desc" data-lang="es">Para grandes vendedores y agencias</p>
+        <p class="pricing-desc" data-lang="en">For large sellers and agencies</p>
+        <ul class="pricing-features">
+          <li data-lang="es">Facturas ilimitadas</li><li data-lang="en">Unlimited invoices</li>
+          <li data-lang="es">Todo lo del Pro</li><li data-lang="en">Everything in Pro</li>
+          <li data-lang="es">Múltiples cuentas</li><li data-lang="en">Multiple accounts</li>
+          <li data-lang="es">Gestoría integrada</li><li data-lang="en">Integrated accountant</li>
+        </ul>
+        <a href="https://app.fiskable.com/register" class="pricing-btn outline" data-lang="es">Empezar gratis</a>
+        <a href="https://app.fiskable.com/register" class="pricing-btn outline" data-lang="en">Start free</a>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:1.5rem;font-size:0.8rem;color:var(--gray)" data-lang="es">Todos los precios sin IVA · Cancela cuando quieras · 14 días de prueba gratuita</p>
+    <p style="text-align:center;margin-top:1.5rem;font-size:0.8rem;color:var(--gray)" data-lang="en">All prices excl. VAT · Cancel anytime · 14-day free trial</p>
+  </div>
+</section>
+
+<section style="background:var(--gray-light)">
+  <div class="container">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title" data-lang="es">Preguntas <em>frecuentes</em></h2>
+    <h2 class="section-title" data-lang="en">Frequently asked <em>questions</em></h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)"><span data-lang="es">¿Para qué plataformas funciona Fiskable?</span><span data-lang="en">Which platforms does Fiskable work with?</span><div class="faq-icon">+</div></button><div class="faq-answer"><p data-lang="es">Fiskable funciona con Amazon (CSV de IVA de Seller Central), Shopify (exportación de pedidos) y facturas en PDF de cualquier plataforma.</p><p data-lang="en">Fiskable works with Amazon (VAT CSV from Seller Central), Shopify (order export) and PDF invoices from any platform.</p></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)"><span data-lang="es">¿Necesito saber de fiscalidad para usar Fiskable?</span><span data-lang="en">Do I need to know about taxes to use Fiskable?</span><div class="faq-icon">+</div></button><div class="faq-answer"><p data-lang="es">No. Fiskable hace la clasificación automáticamente y te explica en lenguaje claro qué significa cada categoría y qué tienes que declarar.</p><p data-lang="en">No. Fiskable classifies automatically and explains in plain language what each category means and what you need to declare.</p></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)"><span data-lang="es">¿Qué pasa con el OSS y el Amazon Marketplace?</span><span data-lang="en">What about OSS and Amazon Marketplace?</span><div class="faq-icon">+</div></button><div class="faq-answer"><p data-lang="es">Fiskable identifica automáticamente qué ventas van al régimen OSS y qué IVA recauda Amazon directamente como Marketplace Facilitator.</p><p data-lang="en">Fiskable automatically identifies which sales fall under the OSS regime and what VAT Amazon collects directly as a Marketplace Facilitator.</p></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)"><span data-lang="es">¿Mis datos están seguros?</span><span data-lang="en">Is my data safe?</span><div class="faq-icon">+</div></button><div class="faq-answer"><p data-lang="es">Sí. Fiskable usa encriptación en reposo y en tránsito. Tus datos nunca se comparten con terceros. Cumplimos con el RGPD.</p><p data-lang="en">Yes. Fiskable uses encryption at rest and in transit. Your data is never shared with third parties. We comply with GDPR.</p></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)"><span data-lang="es">¿Puedo cancelar en cualquier momento?</span><span data-lang="en">Can I cancel at any time?</span><div class="faq-icon">+</div></button><div class="faq-answer"><p data-lang="es">Sí, puedes cancelar tu suscripción cuando quieras sin penalizaciones. Seguirás teniendo acceso hasta el final del período de facturación.</p><p data-lang="en">Yes, you can cancel your subscription at any time without penalties. You will retain access until the end of the billing period.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="container">
+    <div class="section-label" data-lang="es">Empieza hoy</div>
+    <div class="section-label" data-lang="en">Start today</div>
+    <h2 class="section-title" data-lang="es">Tu fiscalidad de Amazon,<br><em>resuelta en minutos</em></h2>
+    <h2 class="section-title" data-lang="en">Your Amazon tax compliance,<br><em>solved in minutes</em></h2>
+    <p style="color:rgba(255,255,255,0.7);margin-top:1rem;font-size:1.05rem" data-lang="es">Únete a los vendedores que ya confían en Fiskable para gestionar su fiscalidad.</p>
+    <p style="color:rgba(255,255,255,0.7);margin-top:1rem;font-size:1.05rem" data-lang="en">Join the sellers who already trust Fiskable to manage their taxes.</p>
+    <div class="cta-final-actions">
+      <a href="https://app.fiskable.com/register" class="btn-white" data-lang="es">Empezar gratis →</a>
+      <a href="https://app.fiskable.com/register" class="btn-white" data-lang="en">Start for free →</a>
+      <a href="mailto:hola@fiskable.com" class="btn-ghost-white" data-lang="es">Hablar con el equipo</a>
+      <a href="mailto:hello@fiskable.com" class="btn-ghost-white" data-lang="en">Talk to the team</a>
+    </div>
+    <p style="margin-top:1.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5)" data-lang="es">Sin tarjeta de crédito · 14 días gratis · Cancela cuando quieras</p>
+    <p style="margin-top:1.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5)" data-lang="en">No credit card · 14 days free · Cancel anytime</p>
+  </div>
+</section>
+
+<footer>
+  <a href="#" class="logo logo-footer"><div class="logo-icon"><svg viewBox="0 0 16 16" fill="none"><polyline points="2,11 6,7 9,10 14,4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="11,4 14,4 14,7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fis<span class="k">kable</span></span></a>
+  <ul class="footer-links">
+    <li><a href="mailto:hola@fiskable.com" data-lang="es">Contacto</a><a href="mailto:hello@fiskable.com" data-lang="en">Contact</a></li>
+    <li><a href="#" data-lang="es">Privacidad</a><a href="#" data-lang="en">Privacy</a></li>
+    <li><a href="#" data-lang="es">Términos</a><a href="#" data-lang="en">Terms</a></li>
+  </ul>
+  <p class="footer-copy">© 2026 Fiskable. <span data-lang="es">Todos los derechos reservados.</span><span data-lang="en">All rights reserved.</span></p>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.body.classList.toggle('lang-en', lang === 'en');
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.set === lang));
+    localStorage.setItem('fiskable_lang', lang);
+  }
+  const savedLang = localStorage.getItem('fiskable_lang');
+  if (savedLang === 'en') setLang('en');
+
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.feature-card, .problem-card, .step, .pricing-card, .faq-item').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
