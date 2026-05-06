@@ -22,11 +22,13 @@
     h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
     .updated { font-size: 0.875rem; color: var(--gray); margin-bottom: 3rem; }
     h2 { font-size: 1.15rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 0.75rem; color: var(--black); }
+    h3 { font-size: 1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--black); }
     p { font-size: 0.95rem; color: #374151; margin-bottom: 1rem; }
     ul { font-size: 0.95rem; color: #374151; padding-left: 1.5rem; margin-bottom: 1rem; }
     ul li { margin-bottom: 0.4rem; }
     a { color: var(--green); }
     .highlight { background: var(--gray-light); border-left: 3px solid var(--green); padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; font-size: 0.9rem; color: #374151; }
+    .amazon-section { background: #fff8f0; border-left: 3px solid #f59e0b; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; }
     footer { border-top: 1px solid var(--border); padding: 2rem 2.5rem; text-align: center; font-size: 0.8rem; color: var(--gray); }
   </style>
 </head>
@@ -44,7 +46,7 @@
   <p class="updated">Última actualización: mayo de 2026</p>
 
   <div class="highlight">
-    En Fiskable nos tomamos muy en serio la privacidad de tus datos. Esta política explica de forma clara qué datos recopilamos, por qué y cómo los protegemos.
+    En Fiskable nos tomamos muy en serio la privacidad de tus datos. Esta política explica de forma clara qué datos recopilamos, por qué y cómo los protegemos, incluyendo los datos obtenidos a través de la API de socios vendedores de Amazon.
   </div>
 
   <h2>1. Responsable del tratamiento</h2>
@@ -64,9 +66,52 @@
     <li><strong>Facturas:</strong> los archivos PDF que subes para el procesamiento automático con IA</li>
     <li><strong>Datos de pago:</strong> gestionados por Stripe — Fiskable no almacena datos de tarjetas</li>
     <li><strong>Datos de uso:</strong> logs de actividad para mejorar el servicio</li>
+    <li><strong>Datos de Amazon vía SP-API:</strong> cuando el usuario autoriza el acceso, datos de informes de IVA, pedidos y transacciones financieras de Amazon Seller Central</li>
   </ul>
 
-  <h2>3. Finalidad del tratamiento</h2>
+  <h2>3. Tratamiento de datos obtenidos a través de la SP-API de Amazon</h2>
+
+  <div class="amazon-section">
+    Esta sección describe específicamente cómo Fiskable trata los datos obtenidos a través de la API de socios vendedores de Amazon (SP-API), en cumplimiento de la Política de Protección de Datos y la Política de Uso Aceptable de Amazon.
+  </div>
+
+  <h3>3.1 Datos de Amazon que recopilamos</h3>
+  <ul>
+    <li><strong>Informes de transacciones de IVA (Reports API):</strong> datos de cada transacción incluyendo país de origen y destino, importe, tipo de IVA, número de IVA del comprador cuando esté disponible y responsabilidad de recaudación</li>
+    <li><strong>Datos de pedidos (Orders API):</strong> número de pedido, fecha, importe, datos de envío y datos de identificación del comprador necesarios para la emisión de facturas</li>
+  </ul>
+
+  <h3>3.2 Finalidad del uso de datos de Amazon</h3>
+  <p>Los datos obtenidos a través de la SP-API de Amazon se utilizan exclusivamente para:</p>
+  <ul>
+    <li>Clasificar automáticamente las transacciones según la normativa de IVA europea</li>
+    <li>Calcular las obligaciones fiscales del vendedor por país y trimestre</li>
+    <li>Generar facturas en cumplimiento de la normativa española Verifactu</li>
+    <li>Preparar los datos necesarios para las declaraciones fiscales trimestrales</li>
+  </ul>
+  <p>Los datos de Amazon <strong>no se utilizan</strong> para ningún otro fin, incluyendo publicidad, marketing, venta de datos o entrenamiento de modelos de inteligencia artificial.</p>
+
+  <h3>3.3 Almacenamiento y retención de datos de Amazon</h3>
+  <p>Los datos obtenidos de Amazon se almacenan de forma cifrada en servidores de Supabase ubicados en la Unión Europea. Los datos se conservan mientras el usuario mantenga una cuenta activa en Fiskable y sean necesarios para la prestación del servicio fiscal.</p>
+  <p>Los datos de pedidos y transacciones utilizados para la generación de facturas se conservan durante el período mínimo exigido por la legislación fiscal española (5 años según la Ley General Tributaria). Una vez transcurrido este período, los datos se eliminan de forma segura.</p>
+
+  <h3>3.4 Eliminación de datos de Amazon</h3>
+  <p>El usuario puede solicitar la eliminación de sus datos de Amazon en cualquier momento escribiendo a <a href="mailto:hola@fiskable.com">hola@fiskable.com</a>. La eliminación se realizará en un plazo máximo de 30 días, salvo que la normativa fiscal obligue a su conservación.</p>
+  <p>Cuando el usuario revoca el acceso OAuth a su cuenta de Amazon, Fiskable deja inmediatamente de acceder a nuevos datos. Los datos ya procesados se conservan durante el período fiscal obligatorio indicado anteriormente.</p>
+
+  <h3>3.5 Compartición de datos de Amazon con terceros</h3>
+  <p>Los datos obtenidos de Amazon se comparten únicamente con los siguientes proveedores tecnológicos necesarios para prestar el servicio:</p>
+  <ul>
+    <li><strong>Supabase:</strong> almacenamiento seguro en la UE</li>
+    <li><strong>Anthropic:</strong> procesamiento puntual de documentos PDF con IA — los datos no se retienen</li>
+    <li><strong>Vercel:</strong> infraestructura de la aplicación</li>
+  </ul>
+  <p>Los datos de Amazon <strong>nunca se venden, ceden ni comparten</strong> con anunciantes, brokers de datos ni ningún otro tercero no autorizado. Todos los proveedores están sujetos a acuerdos de protección de datos conformes al RGPD.</p>
+
+  <h3>3.6 Cumplimiento de las políticas de Amazon</h3>
+  <p>Fiskable cumple con la <a href="https://sellercentral.amazon.com/mws/static/policy?documentType=AUP&locale=en_US" target="_blank">Política de Uso Aceptable</a> y la <a href="https://sellercentral.amazon.com/mws/static/policy?documentType=DPP&locale=en_US" target="_blank">Política de Protección de Datos</a> de Amazon, así como con el <a href="https://sellercentral.amazon.com/mws/static/agreement?locale=en_US" target="_blank">Acuerdo de desarrollador de servicios de Amazon</a>.</p>
+
+  <h2>4. Finalidad del tratamiento general</h2>
   <p>Utilizamos tus datos para:</p>
   <ul>
     <li>Prestar el servicio de clasificación fiscal y gestión de IVA</li>
@@ -77,19 +122,19 @@
     <li>Cumplir con obligaciones legales</li>
   </ul>
 
-  <h2>4. Base jurídica del tratamiento</h2>
+  <h2>5. Base jurídica del tratamiento</h2>
   <p>El tratamiento de tus datos se basa en:</p>
   <ul>
     <li><strong>Ejecución del contrato:</strong> para prestarte el servicio contratado</li>
     <li><strong>Interés legítimo:</strong> para mejorar el servicio y garantizar su seguridad</li>
     <li><strong>Obligación legal:</strong> cuando sea requerido por la normativa aplicable</li>
-    <li><strong>Consentimiento:</strong> para comunicaciones de marketing, si lo has otorgado</li>
+    <li><strong>Consentimiento:</strong> para el acceso a datos de Amazon vía OAuth y para comunicaciones de marketing</li>
   </ul>
 
-  <h2>5. Conservación de los datos</h2>
-  <p>Conservamos tus datos mientras mantengas una cuenta activa en Fiskable. Si cancelas tu cuenta, eliminaremos tus datos en un plazo de 30 días, salvo que la ley nos obligue a conservarlos durante más tiempo (por ejemplo, datos fiscales que deben conservarse 5 años según la normativa española).</p>
+  <h2>6. Conservación de los datos</h2>
+  <p>Conservamos tus datos mientras mantengas una cuenta activa en Fiskable. Si cancelas tu cuenta, eliminaremos tus datos en un plazo de 30 días, salvo que la ley nos obligue a conservarlos durante más tiempo (datos fiscales: 5 años según la normativa española).</p>
 
-  <h2>6. Terceros con acceso a tus datos</h2>
+  <h2>7. Terceros con acceso a tus datos</h2>
   <p>Compartimos tus datos únicamente con los siguientes proveedores necesarios para prestar el servicio:</p>
   <ul>
     <li><strong>Supabase:</strong> almacenamiento de datos en la nube (servidores en la UE)</li>
@@ -99,10 +144,10 @@
   </ul>
   <p>Ninguno de estos proveedores está autorizado a usar tus datos para fines distintos a los aquí descritos. No vendemos tus datos a terceros.</p>
 
-  <h2>7. Transferencias internacionales</h2>
+  <h2>8. Transferencias internacionales</h2>
   <p>Algunos de nuestros proveedores están establecidos en Estados Unidos. En estos casos, las transferencias se realizan bajo las garantías adecuadas del RGPD (Cláusulas Contractuales Tipo o acuerdos de adecuación).</p>
 
-  <h2>8. Tus derechos</h2>
+  <h2>9. Tus derechos</h2>
   <p>De acuerdo con el RGPD, tienes derecho a:</p>
   <ul>
     <li><strong>Acceso:</strong> saber qué datos tenemos sobre ti</li>
@@ -111,20 +156,21 @@
     <li><strong>Portabilidad:</strong> recibir tus datos en formato estructurado</li>
     <li><strong>Oposición:</strong> oponerte a determinados tratamientos</li>
     <li><strong>Limitación:</strong> restringir el tratamiento en ciertos casos</li>
+    <li><strong>Revocación del acceso a Amazon:</strong> puedes revocar el acceso OAuth a tu cuenta de Amazon en cualquier momento desde Seller Central</li>
   </ul>
   <p>Para ejercer estos derechos, escríbenos a <a href="mailto:hola@fiskable.com">hola@fiskable.com</a>. También puedes presentar una reclamación ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank">www.aepd.es</a>).</p>
 
-  <h2>9. Seguridad</h2>
-  <p>Fiskable implementa medidas técnicas y organizativas para proteger tus datos, incluyendo cifrado en reposo y en tránsito (TLS), control de acceso y monitorización de seguridad. Sin embargo, ningún sistema es completamente infalible.</p>
+  <h2>10. Seguridad</h2>
+  <p>Fiskable implementa medidas técnicas y organizativas para proteger tus datos, incluyendo cifrado en reposo y en tránsito (TLS), control de acceso basado en roles, políticas de seguridad a nivel de fila en la base de datos (RLS) y monitorización de seguridad continua.</p>
 
-  <h2>10. Cookies</h2>
+  <h2>11. Cookies</h2>
   <p>Fiskable utiliza cookies estrictamente necesarias para el funcionamiento del servicio (autenticación de sesión). No utilizamos cookies de seguimiento ni publicidad.</p>
 
-  <h2>11. Cambios en esta política</h2>
+  <h2>12. Cambios en esta política</h2>
   <p>Podemos actualizar esta política ocasionalmente. Te notificaremos por email si los cambios son significativos. La fecha de última actualización siempre aparece al principio de este documento.</p>
 
-  <h2>12. Contacto</h2>
-  <p>Para cualquier consulta sobre privacidad, escríbenos a <a href="mailto:hola@fiskable.com">hola@fiskable.com</a> o a nuestra dirección postal: Danova Products SL, Plaza de Europa 4, 2F, 34003 Palencia, España.</p>
+  <h2>13. Contacto</h2>
+  <p>Para cualquier consulta sobre privacidad o sobre el tratamiento de datos de Amazon, escríbenos a <a href="mailto:hola@fiskable.com">hola@fiskable.com</a> o a nuestra dirección postal: Danova Products SL, Plaza de Europa 4, 2F, 34003 Palencia, España.</p>
 </main>
 
 <footer>
